@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will you be my Valentine? 💘</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:rgba(255,255,255,0.78);
+      --text:#2b2b2b;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:radial-gradient(circle at 20% 20%,var(--bg1),var(--bg2));
+      overflow:hidden;
+    }
+
+    /* floating hearts / name pills */
+    .heart{
+      position:absolute;
+      font-size:18px;
+      opacity:0.9;
+      animation:floatUp 7.5s linear infinite;
+      user-select:none;
+      pointer-events:none;
+      filter:drop-shadow(0 6px 10px rgba(0,0,0,0.14));
+      white-space:nowrap;
+    }
+    .heart.name{
+      font-size:14px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.55);
+      border:1px solid rgba(255,255,255,0.7);
+      backdrop-filter:blur(8px);
+      box-shadow:0 10px 22px rgba(0,0,0,0.10);
+    }
+    @keyframes floatUp{
+      from{transform:translateY(20vh) translateX(0) scale(0.9);opacity:0;}
+      10%{opacity:0.9;}
+      to{transform:translateY(-120vh) translateX(40px) scale(1.3);opacity:0;}
+    }
+
+    .wrap{
+      position:relative;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .card{
+      width:min(760px,92vw);
+      background:var(--card);
+      backdrop-filter:blur(10px);
+      border-radius:24px;
+      padding:30px 22px;
+      box-shadow:0 18px 50px rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.6);
+      text-align:center;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,46px);
+      line-height:1.08;
+    }
+    p{
+      margin:0 0 22px;
+      font-size:clamp(14px,2vw,18px);
+      opacity:0.92;
+    }
+
+    .btnRow{
+      position:relative;
+      height:110px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:14px;
+    }
+
+    button{
+      border:none;
+      border-radius:999px;
+      padding:14px 22px;
+      font-size:18px;
+      cursor:pointer;
+      transition:transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      box-shadow:0 12px 24px rgba(0,0,0,0.12);
+      user-select:none;
+    }
+    button:active{transform:translateY(1px) scale(0.99);}
+
+    #yesBtn{
+      background:linear-gradient(135deg,#34d399,#10b981);
+      color:#fff;
+    }
+    #yesBtn:hover{filter:brightness(1.05);}
+
+    #noBtn{
+      background:linear-gradient(135deg,#fb7185,#e11d48);
+      color:#fff;
+      position:absolute;
+      left:55%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      touch-action:none;
+    }
+
+    .hint{
+      margin-top:14px;
+      font-size:13px;
+      opacity:0.78;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .modal.open{display:flex;}
+    .modalCard{
+      width:min(980px,95vw);
+      background:rgba(255,255,255,0.92);
+      border-radius:26px;
+      padding:22px;
+      box-shadow:0 22px 60px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.7);
+      position:relative;
+      overflow:hidden;
+    }
+    .modalCard h2{
+      margin:0 0 8px;
+      font-size:clamp(22px,3vw,36px);
+    }
+    .modalCard .msg{
+      margin:0 0 16px;
+      font-size:clamp(14px,2vw,18px);
+      opacity:0.92;
+      line-height:1.35;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    .grid img{
+      width:100%;
+      height:210px;
+      object-fit:cover;
+      border-radius:18px;
+      box-shadow:0 10px 22px rgba(0,0,0,0.12);
+    }
+    @media (max-width: 780px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .grid img{height:210px;}
+    }
+    @media (max-width: 560px){
+      .grid{grid-template-columns:1fr;}
+      .grid img{height:220px;}
+      .btnRow{height:130px;}
+    }
+
+    .close{
+      position:absolute;
+      right:12px;
+      top:12px;
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      font-size:20px;
+      background:rgba(0,0,0,0.08);
+      box-shadow:none;
+      cursor:pointer;
+    }
+
+    .confetti{
+      position:absolute;
+      inset:-20px;
+      pointer-events:none;
+      opacity:0.9;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,0,100,0.18), transparent 40%),
+        radial-gradient(circle at 70% 30%, rgba(255,200,0,0.15), transparent 45%),
+        radial-gradient(circle at 30% 80%, rgba(0,150,255,0.12), transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(0,255,170,0.12), transparent 45%);
+    }
+  </style>
+</head>
+<body>
+  <div id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <h1>KUKKU JII 💖</h1>
+      <p>Will you officially renew your subscription to me this Valentine’s Day? 😌</p>
+
+      <div class="btnRow" id="arena">
+        <button id="yesBtn">Yes 💚</button>
+        <button id="noBtn" aria-label="No">No 🙃</button>
+      </div>
+
+      <div class="hint">(Try clicking “No” 😈)</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <div class="confetti"></div>
+      <button class="close" id="closeBtn" aria-label="Close">✕</button>
+
+      <h2>Subscription Confirmed ✅💘</h2>
+      <p class="msg">
+        Happy Valentine’s Day, <b>KUKKU JII</b> 💖<br><br>
+        <b>Policy:</b> No cancellation policy once subscribed. Valid for lifetime. 😌<br>
+        <b>Benefits:</b> Unlimited love, hugs, forehead kisses, and “I miss you” messages.
+      </p>
+
+      <div class="grid">
+        <img id="p1" alt="Our photo 1" />
+        <img id="p2" alt="Our photo 2" />
+        <img id="p3" alt="Our photo 3" />
+        <img id="p4" alt="Our photo 4" />
+        <img id="p5" alt="Our photo 5" />
+        <img id="p6" alt="Our photo 6" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== Add 6 images to your repo in: assets/ ======
+    // Name them exactly: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg, 6.jpg
+    // (or change the paths below if you use .png etc.)
+    const PHOTOS = [
+      "assets/1.jpg",
+      "assets/2.jpg",
+      "assets/3.jpg",
+      "assets/4.jpg",
+      "assets/5.jpg",
+      "assets/6.jpg"
+    ];
+
+    // ====== Floating hearts + her name ======
+    const heartsEl = document.getElementById("hearts");
+    const heartChars = ["💗","💖","💘","💝","💕","💞","KUKKU JII 💕","KUKKU JII 💖"];
+
+    function spawnHeart() {
+      const s = document.createElement("span");
+      const pick = heartChars[Math.floor(Math.random() * heartChars.length)];
+      s.className = "heart";
+      s.textContent = pick;
+
+      if (pick.includes("KUKKU JII")) s.classList.add("name");
+
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (6 + Math.random() * 5) + "s";
+      s.style.animationDelay = (Math.random() * 2) + "s";
+
+      if (pick.includes("KUKKU JII")) {
+        s.style.fontSize = (12 + Math.random() * 4) + "px";
+      } else {
+        s.style.fontSize = (14 + Math.random() * 18) + "px";
+      }
+
+      heartsEl.appendChild(s);
+      setTimeout(() => s.remove(), 11000);
+    }
+
+    setInterval(spawnHeart, 320);
+    for (let i = 0; i < 10; i++) spawnHeart();
+
+    // ====== No button runs away (and subtly shrinks) ======
+    const arena = document.getElementById("arena");
+    const noBtn = document.getElementById("noBtn");
+
+    let scale = 1;
+
+    function moveNoButton() {
+      const pad = 10;
+      const arenaRect = arena.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = arenaRect.width - btnRect.width - pad;
+      const maxY = arenaRect.height - btnRect.height - pad;
+
+      const x = pad + Math.random() * Math.max(1, maxX);
+      const y = pad + Math.random() * Math.max(1, maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = `translate(0,0) scale(${scale})`;
+    }
+
+    function dodge() {
+      scale = Math.max(0.55, scale * 0.92); // subtle shrink, never disappears
+      moveNoButton();
+    }
+
+    noBtn.addEventListener("mouseenter", dodge);
+    noBtn.addEventListener("mousemove", dodge);
+
+    arena.addEventListener("touchstart", () => {
+      dodge();
+    }, { passive: true });
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      dodge();
+    });
+
+    // ====== Yes opens modal + loads 6 repo photos ======
+    const yesBtn = document.getElementById("yesBtn");
+    const modal = document.getElementById("modal");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openModal() {
+      for (let i = 1; i <= 6; i++) {
+        const img = document.getElementById("p" + i);
+        img.src = PHOTOS[i - 1];
+      }
+      modal.classList.add("open");
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+    }
+
+    yesBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+  </script>
+</body>
+</html>
