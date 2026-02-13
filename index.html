@@ -150,40 +150,6 @@
       opacity:0.92;
       line-height:1.35;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
-    .grid img{
-      width:100%;
-      height:210px;
-      object-fit:cover;
-      border-radius:18px;
-      box-shadow:0 10px 22px rgba(0,0,0,0.12);
-    }
-    @media (max-width: 780px){
-      .grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-      .grid img{height:210px;}
-    }
-    @media (max-width: 560px){
-      .grid{grid-template-columns:1fr;}
-      .grid img{height:220px;}
-      .btnRow{height:130px;}
-    }
-
-    .close{
-      position:absolute;
-      right:12px;
-      top:12px;
-      width:44px;
-      height:44px;
-      border-radius:999px;
-      font-size:20px;
-      background:rgba(0,0,0,0.08);
-      box-shadow:none;
-      cursor:pointer;
-    }
 
     .confetti{
       position:absolute;
@@ -196,8 +162,173 @@
         radial-gradient(circle at 30% 80%, rgba(0,150,255,0.12), transparent 45%),
         radial-gradient(circle at 85% 75%, rgba(0,255,170,0.12), transparent 45%);
     }
+
+    /* Better close button */
+    .close{
+      position:absolute;
+      right:14px;
+      top:14px;
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-size:20px;
+      background:rgba(255,255,255,0.55);
+      border:1px solid rgba(255,255,255,0.75);
+      backdrop-filter:blur(10px);
+      box-shadow:0 10px 26px rgba(0,0,0,0.18);
+      cursor:pointer;
+      transition:transform .12s ease, filter .12s ease;
+    }
+    .close:hover{filter:brightness(1.05); transform:scale(1.03);}
+    .close:active{transform:scale(0.98);}
+
+    /* Interactive photo grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    .tile{
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 10px 22px rgba(0,0,0,0.12);
+      cursor:pointer;
+      transform:translateZ(0);
+      background:rgba(0,0,0,0.04);
+    }
+    .tile img{
+      width:100%;
+      height:210px;
+      object-fit:cover;
+      display:block;
+      transition:transform .22s ease, filter .22s ease;
+    }
+    .tile:hover img{
+      transform:scale(1.06);
+      filter:saturate(1.05);
+    }
+    .tile::after{
+      content:"Tap to open ✨";
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.60);
+      border:1px solid rgba(255,255,255,0.75);
+      backdrop-filter:blur(8px);
+      opacity:0;
+      transform:translateY(6px);
+      transition:opacity .18s ease, transform .18s ease;
+    }
+    .tile:hover::after{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @media (max-width: 780px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .tile img{height:210px;}
+    }
+    @media (max-width: 560px){
+      .grid{grid-template-columns:1fr;}
+      .tile img{height:220px;}
+      .btnRow{height:130px;}
+    }
+
+    /* Lightbox viewer */
+    .viewer{
+      position:fixed;
+      inset:0;
+      display:none;
+      z-index:10000;
+      background:rgba(0,0,0,0.82);
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+    .viewer.open{display:flex;}
+    .viewerCard{
+      width:min(980px, 96vw);
+      border-radius:22px;
+      overflow:hidden;
+      position:relative;
+      box-shadow:0 26px 80px rgba(0,0,0,0.45);
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.06);
+      backdrop-filter:blur(10px);
+    }
+    .viewerImg{
+      width:100%;
+      height:min(78vh, 720px);
+      object-fit:contain;
+      display:block;
+      background:rgba(0,0,0,0.25);
+    }
+    .viewerTop{
+      position:absolute;
+      inset:10px 10px auto 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      pointer-events:none;
+    }
+    .badge{
+      pointer-events:none;
+      font-size:13px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.18);
+      backdrop-filter:blur(8px);
+      color:#fff;
+    }
+    .viewerClose{
+      pointer-events:auto;
+      width:44px;height:44px;
+      border-radius:999px;
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.14);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      box-shadow:0 10px 26px rgba(0,0,0,0.25);
+      transition:transform .12s ease, filter .12s ease;
+    }
+    .viewerClose:hover{filter:brightness(1.08); transform:scale(1.03);}
+    .viewerClose:active{transform:scale(0.98);}
+
+    .navBtn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:52px;height:52px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.14);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      box-shadow:0 10px 26px rgba(0,0,0,0.25);
+      display:grid;
+      place-items:center;
+      font-size:20px;
+      user-select:none;
+      transition:transform .12s ease, filter .12s ease;
+    }
+    .navBtn:hover{filter:brightness(1.08); transform:translateY(-50%) scale(1.03);}
+    .navBtn:active{transform:translateY(-50%) scale(0.98);}
+    .prev{left:12px;}
+    .next{right:12px;}
   </style>
 </head>
+
 <body>
   <div id="hearts"></div>
 
@@ -217,7 +348,7 @@
 
   <!-- Modal -->
   <div class="modal" id="modal">
-    <div class="modalCard">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Valentine modal">
       <div class="confetti"></div>
       <button class="close" id="closeBtn" aria-label="Close">✕</button>
 
@@ -228,63 +359,68 @@
         <b>Benefits:</b> Unlimited love, hugs, forehead kisses, and “I miss you” messages.
       </p>
 
-      <div class="grid">
-        <img id="p1" alt="Our photo 1" />
-        <img id="p2" alt="Our photo 2" />
-        <img id="p3" alt="Our photo 3" />
-        <img id="p4" alt="Our photo 4" />
-        <img id="p5" alt="Our photo 5" />
-        <img id="p6" alt="Our photo 6" />
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox Viewer -->
+  <div class="viewer" id="viewer" aria-hidden="true">
+    <div class="viewerCard" id="viewerCard">
+      <img class="viewerImg" id="viewerImg" alt="Photo preview" />
+      <div class="viewerTop">
+        <div class="badge" id="viewerBadge">1 / 6</div>
+        <button class="viewerClose" id="viewerClose" aria-label="Close photo">✕</button>
       </div>
+      <button class="navBtn prev" id="prevBtn" aria-label="Previous photo">‹</button>
+      <button class="navBtn next" id="nextBtn" aria-label="Next photo">›</button>
     </div>
   </div>
 
   <script>
-    // ====== Add 6 images to your repo in: assets/ ======
-    // Name them exactly: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg, 6.jpg
-    // (or change the paths below if you use .png etc.)
-    const PHOTOS = [
-      "assets/1.jpg",
-      "assets/2.jpg",
-      "assets/3.jpg",
-      "assets/4.jpg",
-      "assets/5.jpg",
-      "assets/6.jpg"
-    ];
+    // ========= IMPORTANT =========
+    // Put your images in repo: assets/
+    // Best naming: 1.jpg, 2.jpg, ... 6.jpg (or png/webp).
+    // This code will TRY: .jpg, .jpeg, .png, .webp automatically for each 1..6
+    const BASES = ["assets/1","assets/2","assets/3","assets/4","assets/5","assets/6"];
+    const EXT_TRIES = [".jpg",".jpeg",".png",".webp"];
+
+    async function resolveImagePath(base) {
+      // Try each extension until one loads
+      for (const ext of EXT_TRIES) {
+        const url = base + ext;
+        const ok = await new Promise((res) => {
+          const img = new Image();
+          img.onload = () => res(true);
+          img.onerror = () => res(false);
+          img.src = url;
+        });
+        if (ok) return url;
+      }
+      return null;
+    }
 
     // ====== Floating hearts + her name ======
     const heartsEl = document.getElementById("hearts");
     const heartChars = ["💗","💖","💘","💝","💕","💞","KUKKU JII 💕","KUKKU JII 💖"];
-
     function spawnHeart() {
       const s = document.createElement("span");
       const pick = heartChars[Math.floor(Math.random() * heartChars.length)];
       s.className = "heart";
       s.textContent = pick;
-
       if (pick.includes("KUKKU JII")) s.classList.add("name");
-
       s.style.left = Math.random() * 100 + "vw";
       s.style.animationDuration = (6 + Math.random() * 5) + "s";
       s.style.animationDelay = (Math.random() * 2) + "s";
-
-      if (pick.includes("KUKKU JII")) {
-        s.style.fontSize = (12 + Math.random() * 4) + "px";
-      } else {
-        s.style.fontSize = (14 + Math.random() * 18) + "px";
-      }
-
+      s.style.fontSize = pick.includes("KUKKU JII") ? (12 + Math.random() * 4) + "px" : (14 + Math.random() * 18) + "px";
       heartsEl.appendChild(s);
       setTimeout(() => s.remove(), 11000);
     }
-
     setInterval(spawnHeart, 320);
     for (let i = 0; i < 10; i++) spawnHeart();
 
     // ====== No button runs away (and subtly shrinks) ======
     const arena = document.getElementById("arena");
     const noBtn = document.getElementById("noBtn");
-
     let scale = 1;
 
     function moveNoButton() {
@@ -304,44 +440,138 @@
     }
 
     function dodge() {
-      scale = Math.max(0.55, scale * 0.92); // subtle shrink, never disappears
+      scale = Math.max(0.55, scale * 0.92);
       moveNoButton();
     }
 
     noBtn.addEventListener("mouseenter", dodge);
     noBtn.addEventListener("mousemove", dodge);
+    arena.addEventListener("touchstart", () => dodge(), { passive: true });
+    noBtn.addEventListener("click", (e) => { e.preventDefault(); dodge(); });
 
-    arena.addEventListener("touchstart", () => {
-      dodge();
-    }, { passive: true });
-
-    noBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      dodge();
-    });
-
-    // ====== Yes opens modal + loads 6 repo photos ======
+    // ====== Modal + interactive grid + viewer ======
     const yesBtn = document.getElementById("yesBtn");
     const modal = document.getElementById("modal");
     const closeBtn = document.getElementById("closeBtn");
+    const grid = document.getElementById("grid");
 
-    function openModal() {
-      for (let i = 1; i <= 6; i++) {
-        const img = document.getElementById("p" + i);
-        img.src = PHOTOS[i - 1];
+    const viewer = document.getElementById("viewer");
+    const viewerImg = document.getElementById("viewerImg");
+    const viewerBadge = document.getElementById("viewerBadge");
+    const viewerClose = document.getElementById("viewerClose");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let resolved = []; // actual resolved URLs
+    let currentIndex = 0;
+
+    function openModal() { modal.classList.add("open"); }
+    function closeModal() { modal.classList.remove("open"); closeViewer(); }
+
+    function openViewer(idx) {
+      currentIndex = idx;
+      viewer.classList.add("open");
+      viewer.setAttribute("aria-hidden", "false");
+      renderViewer();
+    }
+    function closeViewer() {
+      viewer.classList.remove("open");
+      viewer.setAttribute("aria-hidden", "true");
+    }
+
+    function renderViewer() {
+      const total = resolved.length;
+      viewerBadge.textContent = `${currentIndex + 1} / ${total}`;
+      viewerImg.src = resolved[currentIndex];
+    }
+
+    function prev() {
+      currentIndex = (currentIndex - 1 + resolved.length) % resolved.length;
+      renderViewer();
+    }
+    function next() {
+      currentIndex = (currentIndex + 1) % resolved.length;
+      renderViewer();
+    }
+
+    async function buildGrid() {
+      grid.innerHTML = "";
+      resolved = [];
+
+      // Resolve each image path (tries jpg/jpeg/png/webp)
+      for (let i = 0; i < BASES.length; i++) {
+        const url = await resolveImagePath(BASES[i]);
+        if (!url) {
+          console.warn(`Could not load image for base: ${BASES[i]} (tried jpg/jpeg/png/webp)`);
+          // Put a nice fallback (so layout doesn't break)
+          resolved.push(`https://picsum.photos/seed/valentine${i+1}/1200/900`);
+        } else {
+          resolved.push(url);
+        }
       }
-      modal.classList.add("open");
+
+      // Create clickable tiles
+      resolved.forEach((src, idx) => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.tabIndex = 0;
+        tile.setAttribute("role", "button");
+        tile.setAttribute("aria-label", `Open photo ${idx+1}`);
+
+        const img = document.createElement("img");
+        img.alt = `Our photo ${idx + 1}`;
+        img.src = src;
+
+        tile.appendChild(img);
+
+        tile.addEventListener("click", () => openViewer(idx));
+        tile.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") openViewer(idx);
+        });
+
+        grid.appendChild(tile);
+      });
     }
 
-    function closeModal() {
-      modal.classList.remove("open");
-    }
-
-    yesBtn.addEventListener("click", openModal);
-    closeBtn.addEventListener("click", closeModal);
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
+    yesBtn.addEventListener("click", async () => {
+      openModal();
+      await buildGrid();
     });
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    viewerClose.addEventListener("click", closeViewer);
+    prevBtn.addEventListener("click", prev);
+    nextBtn.addEventListener("click", next);
+
+    // Close viewer when clicking outside card
+    viewer.addEventListener("click", (e) => { if (e.target === viewer) closeViewer(); });
+
+    // Keyboard support: Esc closes, arrows navigate
+    window.addEventListener("keydown", (e) => {
+      if (!modal.classList.contains("open")) return;
+
+      if (e.key === "Escape") {
+        if (viewer.classList.contains("open")) closeViewer();
+        else closeModal();
+      }
+      if (viewer.classList.contains("open")) {
+        if (e.key === "ArrowLeft") prev();
+        if (e.key === "ArrowRight") next();
+      }
+    });
+
+    // Basic swipe support on the viewer image
+    let startX = null;
+    viewerImg.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    viewerImg.addEventListener("touchend", (e) => {
+      if (startX === null) return;
+      const endX = e.changedTouches[0].clientX;
+      const dx = endX - startX;
+      startX = null;
+      if (Math.abs(dx) > 40) (dx > 0 ? prev() : next());
+    }, { passive: true });
   </script>
 </body>
 </html>
